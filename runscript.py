@@ -1,5 +1,5 @@
 import os
 
-os.system("python inputs.py 1 \'Sinorhizobium fredii NGR234\'")
-os.system("echo \'Sinorhizobium fredii NGR234\'")
+os.system("python main.py tmp/queries/chimp.txt")
+os.system("python main.py tmp/queries/mouse.txt")
 
