@@ -1,11 +1,18 @@
 import sys
 from functions import *
 import open_files as files
+import argparse
+
+# Input is read from command line
+f_o_parser = argparse.ArgumentParser()
+f_o_parser.add_argument("input", help="file name the query file")
+f_o_parser.add_argument("-v", "--verbose", action="store_true", help="All the proteinID's and ortholog groups will be "                                                            "saved in seperate files")
+args = f_o_parser.parse_args()
+query = args.input
+verbose = args.verbose
 
 # extracting query
-query = sys.argv[1]
 species_a, species_b = open_query(query)
-
 
 # checking validity for species_a
 assert species_a in files.species_list['#species name'].values, f'The species \'{species_a}\' is not listed in ' \
@@ -20,13 +27,17 @@ tax_id_b = files.species_list.loc[files.species_list['#species name'] == species
 print(files.species_list.loc[files.species_list['#species name'] == species_b])
 
 
-# finding common genes
-common_gene_groups = find_common_gene_groups(tax_id_a, tax_id_b, files.members_list)
+# finding common orthologs
+common_gene_groups, a_genes, b_genes = find_common_gene_groups_and_proteins(tax_id_a, tax_id_b, files.members_list)
 
-# print(len(common_gene_groups))
-# print(20345 - 19017)
+# writing lists of the ortholog groups for each species
+if verbose:
+    write_ortholog_groups(common_gene_groups, a_genes, b_genes, query)
+
+# adding information to them
+common_gene_groups = add_gene_annotation(common_gene_groups, files.annotation_list)
 
 # writing results on a text document
-common_genes = write_result(common_gene_groups, query)
+common_genes_a, common_genes_b = write_result(common_gene_groups, query, verbose)
 
 
