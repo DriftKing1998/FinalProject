@@ -10,7 +10,7 @@ def f_o_script():
                  'files)?'):
         verbose = True
     # show queries
-    current_queries = glob.glob("tmp\\queries\\*.txt")
+    current_queries = glob.glob("all_queries\\queries\\*.txt")
     print('\nAll queries:')
     for idx, file in enumerate(current_queries):
         print(f'{idx} : {file}')
@@ -20,14 +20,14 @@ def f_o_script():
         for query in current_queries:
             print(os.path.normpath(query))
             os.system(f'python find_orthologs.py {query} {"-v" if verbose else ""}')
-            os.system(f'move {query} tmp\\old_queries\\')
+            os.system(f'move {query} all_queries\\old_queries\\')
     else:
         # Chose query
         file_no = int(input('\nWhich query do you want to use? (type index of the file) '))
         assert file_no in range(len(current_queries)), 'There is no file with this index.'
         print(os.path.normpath(current_queries[file_no]))
         os.system(f'python specific_to.py {current_queries[file_no]}')
-        os.system(f'move {current_queries[file_no]} tmp\\old_queries\\')
+        os.system(f'move {current_queries[file_no]} all_queries\\old_queries\\')
 
 
 def c_r_script():
@@ -53,7 +53,7 @@ def c_r_script():
 
 def s_t_script():
     # Listing all possible queries
-    current_queries = glob.glob("tmp\\queries\\*.txt")
+    current_queries = glob.glob("all_queries\\queries\\*.txt")
     print('\nAll queries:')
     for idx, file in enumerate(current_queries):
         print(f'{idx} : {file}')
@@ -61,11 +61,11 @@ def s_t_script():
         for query in current_queries:
             print(os.path.normpath(query))
             os.system(f'python specific_to.py {query}')
-            os.system(f'move {query} tmp\\old_queries\\')
+            os.system(f'move {query} all_queries\\old_queries\\')
     else:
         # Chose query
         file_no = int(input('\nWhich query do you want to use? (type index of the file) '))
         assert file_no in range(len(current_queries)), 'There is no file with this index.'
         print(os.path.normpath(current_queries[file_no]))
         os.system(f'python specific_to.py {current_queries[file_no]}')
-        os.system(f'move {current_queries[file_no]} tmp\\old_queries\\')
+        os.system(f'move {current_queries[file_no]} all_queries\\old_queries\\')
