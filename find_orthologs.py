@@ -1,8 +1,8 @@
 from functions import open_query, check_validity_query, find_ortholog_groups_and_proteins, \
     write_ortholog_groups, add_gene_annotation, write_ortholog_result
 import open_files as files
-import argparse
-import os
+import lib.argparse as argparse
+import lib.os as os
 
 # Input is read from command line
 f_o_parser = argparse.ArgumentParser()

@@ -1,4 +1,4 @@
-import pandas as pd
+import lib.pandas as pd
 
 
 def check_validity_query(species_a, species_b, species_list):
@@ -140,6 +140,45 @@ def find_ortholog_groups_and_proteins(tax_id_a, tax_id_b, members):
     return common_gene_groups, only_a_gene_groups, only_b_gene_groups
 
 
+def compare_results(genes_1, genes_2, only_first):
+    genes_1_data = pd.read_table(genes_1)
+    genes_2_data = pd.read_table(genes_2)
+    g1_sp1, g1_sp2 = [x.replace(" ", "_") for x in genes_1_data.columns.tolist()[-2:]]
+    g2_sp1, g2_sp2 = [x.replace(" ", "_") for x in genes_2_data.columns.tolist()[-2:]]
+    genes_only_selected_sp = []
+    c_a1 = 0
+    c_a2 = 0
+    c_b1 = 0
+    c_b2 = 0
+    if only_first:
+        print('Filtering gene groups only in first file...')
+        for gene_c in list(genes_1_data['ortholog'].values):
+            if gene_c not in list(genes_2_data['ortholog'].values):
+                genes_only_selected_sp.append(gene_c)
+                c_a1 += len(list(genes_1_data.loc[genes_1_data['ortholog'] == gene_c][g1_sp1])[0].split(', '))
+                c_b1 += len(list(genes_1_data.loc[genes_1_data['ortholog'] == gene_c][g1_sp2])[0].split(', '))
+
+        print(f'\nOrtholog groups only in FIRST FILE: {len(genes_only_selected_sp)}\n'
+              f'These correspond to {c_a1} different genes for {g1_sp1}.\n'
+              f'These correspond to {c_b1} different genes for {g1_sp2}.')
+    else:
+        print('Filtering common gene groups...')
+        for gene_c in list(genes_1_data['ortholog'].values):
+            if gene_c in list(genes_2_data['ortholog'].values):
+                genes_only_selected_sp.append(gene_c)
+                c_a1 += len(list(genes_1_data.loc[genes_1_data['ortholog'] == gene_c][g1_sp1])[0].split(', '))
+                c_b1 += len(list(genes_1_data.loc[genes_1_data['ortholog'] == gene_c][g1_sp2])[0].split(', '))
+                c_a2 += len(list(genes_2_data.loc[genes_2_data['ortholog'] == gene_c][g2_sp1])[0].split(', '))
+                c_b2 += len(list(genes_2_data.loc[genes_2_data['ortholog'] == gene_c][g2_sp2])[0].split(', '))
+
+        print(f'\nOrtholog groups in BOTH FILES: {len(genes_only_selected_sp)}\n'
+              f'These correspond to {c_a1} different genes for {g1_sp1}.\n'
+              f'These correspond to {c_b1} different genes for {g1_sp2}.\n'
+              f'These correspond to {c_a2} different genes for {g2_sp1}.\n'
+              f'These correspond to {c_b2} different genes for {g2_sp2}.')
+    return genes_only_selected_sp
+
+
 def find_specific_to(ID_a, ID_b, members):
     both = 0
     only_a = 0
@@ -215,42 +254,3 @@ def get_taxID(sp, species):
 def get_species_name(ID):
     from open_files import species_list
     return str(species_list.loc[species_list['tax id'] == ID]['#species name'].values[0])
-
-
-def compare_results(genes_1, genes_2, only_first):
-    genes_1_data = pd.read_table(genes_1)
-    genes_2_data = pd.read_table(genes_2)
-    g1_sp1, g1_sp2 = [x.replace(" ", "_") for x in genes_1_data.columns.tolist()[-2:]]
-    g2_sp1, g2_sp2 = [x.replace(" ", "_") for x in genes_2_data.columns.tolist()[-2:]]
-    genes_only_selected_sp = []
-    c_a1 = 0
-    c_a2 = 0
-    c_b1 = 0
-    c_b2 = 0
-    if only_first:
-        print('Filtering gene groups only in first file..')
-        for gene_c in list(genes_1_data['ortholog'].values):
-            if gene_c not in list(genes_2_data['ortholog'].values):
-                genes_only_selected_sp.append(gene_c)
-                c_a1 += len(list(genes_1_data.loc[genes_1_data['ortholog'] == gene_c][g1_sp1])[0].split(', '))
-                c_b1 += len(list(genes_1_data.loc[genes_1_data['ortholog'] == gene_c][g1_sp2])[0].split(', '))
-
-        print(f'\nOrtholog groups only in FIRST FILE: {len(genes_only_selected_sp)}\n'
-              f'These correspond to {c_a1} different genes for {g1_sp1}.\n'
-              f'These correspond to {c_b1} different genes for {g1_sp2}.')
-    else:
-        print('Filtering common gene groups...')
-        for gene_c in list(genes_1_data['ortholog'].values):
-            if gene_c in list(genes_2_data['ortholog'].values):
-                genes_only_selected_sp.append(gene_c)
-                c_a1 += len(list(genes_1_data.loc[genes_1_data['ortholog'] == gene_c][g1_sp1])[0].split(', '))
-                c_b1 += len(list(genes_1_data.loc[genes_1_data['ortholog'] == gene_c][g1_sp2])[0].split(', '))
-                c_a2 += len(list(genes_2_data.loc[genes_2_data['ortholog'] == gene_c][g2_sp1])[0].split(', '))
-                c_b2 += len(list(genes_2_data.loc[genes_2_data['ortholog'] == gene_c][g2_sp2])[0].split(', '))
-
-        print(f'\nOrtholog groups in BOTH FILES: {len(genes_only_selected_sp)}\n'
-              f'These correspond to {c_a1} different genes for {g1_sp1}.\n'
-              f'These correspond to {c_b1} different genes for {g1_sp2}.\n'
-              f'These correspond to {c_a2} different genes for {g2_sp1}.\n'
-              f'These correspond to {c_b2} different genes for {g2_sp2}.')
-    return genes_only_selected_sp

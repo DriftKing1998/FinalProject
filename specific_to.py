@@ -1,7 +1,7 @@
 from functions import open_query, check_validity_query, find_specific_to, add_gene_annotation, yes_or_no, write_spec_result
 import open_files as files
-import argparse
-import os
+import lib.argparse as argparse
+import lib.os as os
 
 # Input is read from command line
 s_t_parser = argparse.ArgumentParser()

@@ -1,5 +1,5 @@
-import os
-import glob
+import lib.os as os
+import lib.glob as glob
 from functions import yes_or_no
 
 
@@ -26,7 +26,7 @@ def f_o_script():
         file_no = int(input('\nWhich query do you want to use? (type index of the file) '))
         assert file_no in range(len(current_queries)), 'There is no file with this index.'
         print(os.path.normpath(current_queries[file_no]))
-        os.system(f'python specific_to.py {current_queries[file_no]}')
+        os.system(f'python find_orthologs.py {current_queries[file_no]} {"-v" if verbose else ""}')
         os.system(f'move {current_queries[file_no]} all_queries\\old_queries\\')
 
 

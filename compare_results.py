@@ -1,6 +1,6 @@
 from functions import compare_results, write_comp_result, yes_or_no
-import argparse
-import os
+import lib.argparse as argparse
+import lib.os as os
 
 # Input is read from command line
 parser = argparse.ArgumentParser()
