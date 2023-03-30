@@ -1,7 +1,8 @@
-import os
-from functions import *
+from functions import open_query, check_validity_query, find_ortholog_groups_and_proteins, \
+    write_ortholog_groups, add_gene_annotation, write_ortholog_result
 import open_files as files
 import argparse
+import os
 
 # Input is read from command line
 f_o_parser = argparse.ArgumentParser()
@@ -15,23 +16,15 @@ verbose = args.verbose
 # extracting query
 species_a, species_b = open_query(query)
 
-# checking validity for species_a
-assert species_a in files.species_list['#species name'].values, f'The species \'{species_a}\' is not listed in ' \
-                                                                   f'the database '
-tax_id_a = files.species_list.loc[files.species_list['#species name'] == species_a]['tax id'].values[0]
-print(files.species_list.loc[files.species_list['#species name'] == species_a])
+# checking validity
+tax_id_a, tax_id_b = check_validity_query(species_a, species_b, files.species_list)
 
-# checking validity for species_b
-assert species_b in files.species_list['#species name'].values, f'The species \'{species_b}\' is not listed in ' \
-                                                                   f'the database '
-tax_id_b = files.species_list.loc[files.species_list['#species name'] == species_b]['tax id'].values[0]
-print(files.species_list.loc[files.species_list['#species name'] == species_b])
-
+# cleaning names
 species_a = species_a.replace(" ", "_")
 species_b = species_b.replace(" ", "_")
 
 # finding common orthologs
-common_gene_groups, a_genes, b_genes = find_common_gene_groups_and_proteins(tax_id_a, tax_id_b, files.members_list)
+common_gene_groups, a_genes, b_genes = find_ortholog_groups_and_proteins(tax_id_a, tax_id_b, files.members_list)
 
 # writing lists of the ortholog groups for each species
 if verbose:
@@ -41,6 +34,6 @@ if verbose:
 common_gene_groups = add_gene_annotation(common_gene_groups, files.annotation_list)
 
 # writing results on a text document
-common_genes_a, common_genes_b = write_ortholog_result(common_gene_groups, species_a, species_b, verbose)
+write_ortholog_result(common_gene_groups, species_a, species_b, verbose)
 
 

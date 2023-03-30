@@ -39,7 +39,7 @@ def c_r_script():
 
     # Chose two results to compare
     file_no = [int(input('\nWhich result do you want to compare? (type the index of first file) ')),
-               int(input('\nWhich result do you want to compare? (type the index of second file) '))]
+               int(input('Which result do you want to compare? (type the index of second file) '))]
     assert set(file_no).issubset(range(len(current_files))), 'There is no file with this index.'
 
     # Chose the algorithm with which to compare
